@@ -83,7 +83,7 @@ GDP_long %>%
         axis.title = element_text(size = 30, family = 'kalam'),
         axis.text.y = element_text(size = 18,family = 'kalam'),
         axis.text.x = element_text(size = 14, angle = 10, family = 'kalam'),
-        ) -> GDP_line
+  ) -> GDP_line
 
 
 GDP_long %>%  
@@ -128,13 +128,13 @@ GDP_map <- china_map %>%
   select(Province,ratio, geometry, relative) %>% 
   mutate(hjust = if_else(relative >= 0, 0,1),
          type = case_when(relative >= 15 ~ 1,
-                         10 <= relative & relative < 15  ~ 2,
-                         5 <= relative & relative <  10  ~ 3,
-                         0 <= relative & relative <  5  ~ 4,
-                        -5 <= relative & relative < 0  ~ 5,
-                        -10 <= relative & relative < -5  ~ 6,
-                        -15 <= relative & relative < -10  ~ 7,
-                         relative < -15 ~ 8),
+                          10 <= relative & relative < 15  ~ 2,
+                          5 <= relative & relative <  10  ~ 3,
+                          0 <= relative & relative <  5  ~ 4,
+                          -5 <= relative & relative < 0  ~ 5,
+                          -10 <= relative & relative < -5  ~ 6,
+                          -15 <= relative & relative < -10  ~ 7,
+                          relative < -15 ~ 8),
          type = factor(as.character(type)),
          fill = case_when(type == "1" ~ "#FC4E2A",
                           type == "2" ~ "#FD8D3C",
@@ -145,8 +145,8 @@ GDP_map <- china_map %>%
                           type == "7" ~ "#6BAED6",
                           type == "8" ~ "#2470a0",
                           TRUE ~ "lightgrey"))%>% 
-         arrange(desc(relative)) 
-  
+  arrange(desc(relative)) 
+
 
 
 GDP_map %>% 
