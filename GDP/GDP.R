@@ -155,33 +155,33 @@ ggsave("GDP/GDP_two_axes.png", compare_col, width = 12, height = 6,bg = 'white')
 
 
 #地图数据
-GDP_map <- china_map %>% 
-  rename(quhao = QUHUADAIMA) %>% 
-  mutate(quhao = case_when(quhao== 'daodian' ~ NAME,
-                           TRUE ~ quhao)) %>% 
-  select(quhao,geometry) %>% 
-  left_join(GDP_wide, by = 'quhao') %>% 
-  select(Province,ratio, geometry, relative) %>% 
-  mutate(hjust = if_else(relative >= 0, 0,1),
-         type = case_when(relative >= 15 ~ 1,
-                          10 <= relative & relative < 15  ~ 2,
-                          5 <= relative & relative <  10  ~ 3,
-                          0 <= relative & relative <  5  ~ 4,
-                          -5 <= relative & relative < 0  ~ 5,
-                          -10 <= relative & relative < -5  ~ 6,
-                          -15 <= relative & relative < -10  ~ 7,
-                          relative < -15 ~ 8),
-         type = factor(as.character(type)),
-         fill = case_when(type == "1" ~ "#FC4E2A",
-                          type == "2" ~ "#FD8D3C",
-                          type == "3" ~ "#FEB24C",
-                          type == "4" ~ "#FED976",
-                          type == "5" ~ "#C6DBEF",
-                          type == "6" ~ "#9ECAE1",
-                          type == "7" ~ "#6BAED6",
-                          type == "8" ~ "#2470a0",
-                          TRUE ~ "lightgrey"))%>% 
-  arrange(desc(relative)) 
+  GDP_map <- china_map %>% 
+    rename(quhao = QUHUADAIMA) %>% 
+    mutate(quhao = case_when(quhao== 'daodian' ~ NAME,
+                             TRUE ~ quhao)) %>% 
+    select(quhao,geometry) %>% 
+    left_join(GDP_wide, by = 'quhao') %>% 
+    select(Province,ratio, geometry, relative) %>% 
+    mutate(hjust = if_else(relative >= 0, 0,1),
+           type = case_when(relative >= 15 ~ 1,
+                            10 <= relative & relative < 15  ~ 2,
+                            5 <= relative & relative <  10  ~ 3,
+                            0 <= relative & relative <  5  ~ 4,
+                            -5 <= relative & relative < 0  ~ 5,
+                            -10 <= relative & relative < -5  ~ 6,
+                            -15 <= relative & relative < -10  ~ 7,
+                            relative < -15 ~ 8),
+           type = factor(as.character(type)),
+           fill = case_when(type == "1" ~ "#FC4E2A",
+                            type == "2" ~ "#FD8D3C",
+                            type == "3" ~ "#FEB24C",
+                            type == "4" ~ "#FED976",
+                            type == "5" ~ "#C6DBEF",
+                            type == "6" ~ "#9ECAE1",
+                            type == "7" ~ "#6BAED6",
+                            type == "8" ~ "#2470a0",
+                            TRUE ~ "lightgrey"))%>% 
+    arrange(desc(relative)) 
 
 
 
