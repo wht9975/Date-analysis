@@ -10,6 +10,7 @@ library(extrafont)
 library(RColorBrewer)
 library(cowplot)
 library(ragg)
+library(ggnewscale)
 font_add_google("Calligraffitti", "call")
 font_add_google("Kalam", "kalam")
 font_add_google("ZCOOL KuaiLe", "cool")
@@ -84,6 +85,7 @@ GDP_long %>%
         axis.text.y = element_text(size = 18,family = 'kalam'),
         axis.text.x = element_text(size = 14, angle = 10, family = 'kalam'),
   ) -> GDP_line
+ggsave('GDP/GDP_line.png',GDP_line, height = 18, width = 32, unit = 'cm', scaling = 1, bg = 'white')
 
 
 GDP_long %>%  
@@ -119,6 +121,40 @@ GDP_wide %>%
 
 ggsave("GDP/GDP_cycle.png", GDP_cycle, width = 6, height = 6, scaling = 1, bg = 'white')
 
+#双轴柱状图
+GDP_wide %>% 
+  mutate(incs = year2020 - year1992) %>% 
+  ggplot() +
+  geom_col(aes(x = reorder(Province, -ratio), y = -incs, fill = incs),show.legend = F) +
+  scale_fill_gradient(low = '#33655b', high = '#bbded6')+
+  new_scale_fill()+
+  geom_col(aes(x = reorder(Province, -ratio), y = ratio*1000,fill = ratio),show.legend = F)+
+  scale_fill_gradientn(colors = met.brewer('Hokusai2', direction = -1))+
+  scale_y_continuous(breaks = c(seq(-90000, 0, 30000), c(20000, 40000, 60000)), 
+                     labels = c("90000","60000","30000","0","","",""),
+                     sec.axis = sec_axis(~ ./10, name = "GDP增速(%)", 
+                                         breaks = seq(0, 6000,2000))) + 
+  geom_text(aes(x = reorder(Province, -ratio), y = ratio*1000, 
+                label = paste0(scales::comma(round(ratio*100),1.0),"%")),
+            hjust = 0.4, vjust = -0.5, size =6.5, family = 'call') +
+  geom_text(aes(x = reorder(Province, -ratio), y = -incs, 
+                label = scales::comma(incs,1.0)),
+            hjust = 0.5, vjust = 1.5, size =6.5, family = 'call') +
+  geom_hline(aes(yintercept = 0), size = 0.6 , color = "white") +
+  theme_minimal()+
+  labs(y =" GDP增量（亿元）")+
+  theme(panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(size = 0.4, color = 'darkgray'),
+        panel.grid.minor.y = element_line(size = 0.3, color = 'lightgray'),
+        axis.text.y = element_text(size = 18, family = 'kalam'),
+        axis.title.y.left = element_text(hjust = 0.28, size = 32, vjust = 2),
+        axis.title.y.right = element_text(hjust = 0.12, size = 32, vjust = 2),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 18, family = 'kalam', angle = 15, hjust = 0.5)) -> compare_col
+ggsave("GDP/GDP_two_axes.png", compare_col, width = 12, height = 6,bg = 'white')
+
+
+#地图数据
 GDP_map <- china_map %>% 
   rename(quhao = QUHUADAIMA) %>% 
   mutate(quhao = case_when(quhao== 'daodian' ~ NAME,
